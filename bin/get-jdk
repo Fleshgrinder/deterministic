@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+version=${1:?missing required <version> argument}
+
+tmpdir=$(mktemp -dt jdk)
+trap 'rm -fr "$tmpdir"' EXIT
+
+os=$(uname -s)
+os=${os,,}
+case "$os" in
+darwin) os=macos ;;
+esac
+
+arch=$(uname -m)
+case "$arch" in
+x86_64) arch=x64 ;;
+esac
+
+printf '\e[1m> Downloaded \e[37mJDK %s\e[0m\n' "$version" >&2
+
+(
+  cd "$tmpdir"
+  curl -fsLSZ "https://corretto.aws/downloads/latest/amazon-corretto-$version-$arch-$os-jdk.tar.gz" | tar -xz --strip-components 2
+)
+
+mkdir -p build/jdk
+if [[ -d "$tmpdir"/Home ]]; then
+  mv -f "$tmpdir"/Home/* build/jdk
+else
+  mv -f "$tmpdir"/* build/jdk
+fi
+
+printf '\e[32m' >&2
+./build/jdk/bin/java -version >&2
+printf '\e[0m' >&2

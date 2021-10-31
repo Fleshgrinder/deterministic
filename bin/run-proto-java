@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+version=${1:?missing required <version> argument}
+dir="build/proto/$version"
+
+printf '\e[1m> ran \e[37mproto %s java\e[0m\n' "$version" >&2
+shopt -s globstar
+printf '\e[31m' >&2
+./build/jdk/bin/java \
+  -Djdk.module.illegalAccess.silent=true \
+  -classpath "$dir"/proto.jar:"$dir"/target/java \
+  ProtoMain >"$dir"/java.bin
+printf '\e[0m' >&2

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "KeyProto";
+
+message Key {
+  bool bool_value = 1;
+  bytes bytes_value = 2;
+  double double_value = 3;
+  fixed32 fixed32_value = 4;
+  fixed64 fixed64_value = 5;
+  float float_value = 6;
+  int32 int32_value = 7;
+  int64 int64_value = 8;
+  sfixed32 sfixed32_value = 9;
+  sfixed64 sfixed64_value = 10;
+  string string_value = 11;
+  uint32 uint32_value = 12;
+  uint64 uint64_value = 13;
+  repeated int32 repeated_value = 14;
+  oneof oneof_value {
+    string some_value = 15;
+    string other_value = 16;
+  }
+  Key nested_message_value = 17;
+  EnumeratedType enumerated_type_value = 18;
+  enum EnumeratedType {
+    UNSPECIFIED = 0;
+    SOME = 1;
+  }
+}

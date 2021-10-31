@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly cache=build/proto/versions.txt
+
+[[ ! -f "$cache" ]] || exec cat "$cache"
+
+printf '\e[1m> Cached \e[37mproto versions\e[0m\n' >&2
+
+mkdir -p "$(dirname "$cache")"
+touch "$cache"
+
+while read -r version; do
+  printf -- '  - \e[32m%s\e[0m\n' "$version" >&2
+  printf -- '%s ' "$version"
+  printf -- '%s ' "$version" >>"$cache"
+done < <(
+  git ls-remote \
+    --exit-code \
+    --quiet \
+    --refs \
+    --tags \
+    git@github.com:protocolbuffers/protobuf.git \
+    'v3.[0-9].[0-9]' \
+    'v3.[1-9][0-9].[0-9]' \
+    'v3.[0-9].[1-9][0-9]' \
+    'v3.[1-9][0-9].[1-9][0-9]' |
+    cut -f2 |
+    cut -d/ -f3 |
+    cut -c2- |
+    sort --version-sort |
+    grep -Fv \
+      -e '3.2.1' \
+      -e '3.3.1' \
+      -e '3.3.2' \
+      -e '3.4.1' \
+      -e '3.5.2' \
+      -e '3.10.1' \
+      -e '3.11.2' \
+      -e '3.12.3'
+)

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+version=${1:?missing required <version> argument}
+shift 1
+: "${1:?missing required <language...> argument}"
+
+languages=()
+for language in "$@"; do
+  out="build/proto/$version/code/$language"
+  mkdir -p "$out"
+  languages+=("--${language}_out=$out")
+done
+
+shopt -s globstar
+exec "build/proto/$version/protoc" "${languages[@]}" --proto_path=src/proto src/proto/**/*.proto

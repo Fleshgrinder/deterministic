@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+version=${1:?missing required <version> argument}
+
+os=$(uname -s)
+os=${os,,}
+case "$os" in
+darwin) os=osx ;;
+esac
+
+arch=$(uname -m)
+
+printf '\e[1m> Downloaded \e[37mprotoc %s\e[0m\n' "$version" >&2
+
+tmp_dir=$(mktemp -dt proto-compiler)
+trap 'rm -fr "$tmp_dir"' EXIT
+readonly zip_file="$tmp_dir/protoc.zip"
+curl -fsLSZo"$zip_file" "https://github.com/protocolbuffers/protobuf/releases/download/v$version/protoc-$version-$os-$arch.zip"
+unzip -qq -d"$tmp_dir" "$zip_file"
+
+bin="build/proto/$version/protoc"
+mkdir -p "$(dirname "$bin")"
+mv "$tmp_dir/bin/protoc" "$bin"
+
+printf '\e[32m' >&2
+"$bin" --version >&2
+printf '\e[0m' >&2

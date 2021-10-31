@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readarray -d '' bins < <(printf '%s\0' build/proto/*/*.bin | sort -z --version-sort)
+if ((${#bins[@]} == 0)); then
+  echo -e '\e[31mCould not find any *.bin files to test against each other.\e[0m' >&2
+  exit 1
+fi
+
+first=${bins[0]}
+deterministic='👍'
+echo -e '\e[1m> Expecting \e[37mproto\e[39m:\e[0m'
+xxd "$first"
+echo
+
+for bin in "${bins[@]}"; do
+  version=${bin%/*}
+  version=${version##*/}
+
+  language=${bin##*/}
+  language=${language%.*}
+
+  printf '\e[1m> Testing \e[37mproto %s %s\e[0m ' "$version" "$language"
+  if cmp -s "$first" "$bin"; then
+    echo '🟢'
+  else
+    deterministic='💩'
+    echo '🔴'
+    xxd "$bin"
+  fi
+done
+
+echo "
+    $deterministic
+"

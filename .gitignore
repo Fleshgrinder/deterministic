@@ -1,0 +1,13 @@
+/.idea/
+
+# Used to cache downloads, so that we don't have to download things over and
+# over again. This can be cleaned with:
+#
+#     gmake cleaner
+/.cache/
+
+# Generated and compiled code, this is frequently cleaned so that things can
+# be executed over and over again. This can be cleaned with:
+#
+#     gmake clean
+/build/
