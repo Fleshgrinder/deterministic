@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+version=${1:?missing required <version> argument}
+
+exec build/jdk/bin/java \
+  -jar "build/avro/$version/compiler/java/tools.jar" \
+  compile \
+  schema \
+  src/avro/key.avsc \
+  "build/avro/$version/code/java"

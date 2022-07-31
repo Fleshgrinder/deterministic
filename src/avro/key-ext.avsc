@@ -1,0 +1,63 @@
+{
+  "name": "Key",
+  "type": "record",
+  "fields": [
+    {
+      "name": "booleanValue",
+      "type": "boolean"
+    },
+    {
+      "name": "bytesValue",
+      "type": "bytes"
+    },
+    {
+      "name": "doubleValue",
+      "type": "double"
+    },
+    {
+      "name": "floatValue",
+      "type": "float"
+    },
+    {
+      "name": "intValue",
+      "type": "int"
+    },
+    {
+      "name": "longValue",
+      "type": "long"
+    },
+    {
+      "name": "nullValue",
+      "type": "null"
+    },
+    {
+      "name": "stringValue",
+      "type": "string"
+    },
+    {
+      "name": "unionValue",
+      "type": ["int", "string"]
+    },
+    {
+      "type": "fixed",
+      "size": 16,
+      "name": "fixedValue"
+    },
+    {
+      "name": "arrayValue",
+      "type": "array",
+      "items": "int"
+    },
+    {
+      "name": "enumValue",
+      "type": "enum",
+      "symbols": [
+        "SOME"
+      ]
+    },
+    {
+      "name": "nestedValue",
+      "type": "Key"
+    }
+  ]
+}

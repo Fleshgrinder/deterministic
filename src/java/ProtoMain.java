@@ -1,4 +1,5 @@
 import com.google.protobuf.ByteString;
+import proto.Key;
 import sun.misc.Unsafe;
 
 import java.io.IOException;

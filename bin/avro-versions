@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly cache=build/avro/versions.txt
+
+[[ ! -f "$cache" ]] || exec cat "$cache"
+
+printf '\e[1m> Cached \e[37mavro versions\e[0m\n' >&2
+
+mkdir -p "$(dirname "$cache")"
+touch "$cache"
+
+read-dom() {
+  local IFS='>'
+  read -rd'<' entity content
+}
+
+while read-dom; do
+  if [[ "$entity" == 'version' ]]; then
+    printf -- '  - \e[32m%s\e[0m\n' "$content" >&2
+    printf -- '%s ' "$content"
+    printf -- '%s ' "$content" >>"$cache"
+  fi
+done < <(curl -fsLSZ https://repo1.maven.org/maven2/org/apache/avro/avro-tools/maven-metadata.xml)

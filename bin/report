@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-readarray -d '' bins < <(printf '%s\0' build/proto/*/*.bin | sort -z --version-sort)
+format=${1:?missing required <format> argument}
+
+readarray -d '' bins < <(printf '%s\0' build/"$format"/*/*.bin | sort -z --version-sort)
 if ((${#bins[@]} == 0)); then
-  echo -e '\e[31mCould not find any *.bin files to test against each other.\e[0m' >&2
+  echo -e "\e[31mCould not find any 'build/$format/*.bin' files to test against each other.\e[0m" >&2
   exit 1
 fi
 
 first=${bins[0]}
 deterministic='👍'
-echo -e '\e[1m> Expecting \e[37mproto\e[39m:\e[0m'
+echo -e "\e[1m> Expecting \e[37m$format\e[39m:\e[0m"
 xxd "$first"
 echo
 
@@ -20,7 +22,7 @@ for bin in "${bins[@]}"; do
   language=${bin##*/}
   language=${language%.*}
 
-  printf '\e[1m> Testing \e[37mproto %s %s\e[0m ' "$version" "$language"
+  printf '\e[1m> Testing \e[37m%s %s %s\e[0m ' "$format" "$version" "$language"
   if cmp -s "$first" "$bin"; then
     echo '🟢'
   else

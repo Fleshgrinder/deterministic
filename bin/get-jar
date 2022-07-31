@@ -4,9 +4,8 @@ set -Eeuo pipefail
 group=${1:?missing required <group> argument}
 module=${2:?missing required <module> argument}
 version=${3:?missing required <version> argument}
+output=${4:?missing required <output> argument}
 
 printf '\e[1m> Downloaded \e[37m%s:%s:%s\e[0m\n' "$group" "$module" "$version" >&2
-
-file="build/proto/$version/proto.jar"
-mkdir -p "$(dirname "$file")"
-exec curl -fsLSZo"$file" "https://repo1.maven.org/maven2/${group//.//}/$module/$version/$module-$version.jar"
+mkdir -p "$(dirname "$output")"
+exec curl -fsLSZo"$output" "https://repo1.maven.org/maven2/${group//.//}/$module/$version/$module-$version.jar"
